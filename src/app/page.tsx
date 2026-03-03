@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
@@ -84,9 +85,9 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-on-surface-variant">
             Don&apos;t have an account?{" "}
-            <a href="#" className="font-medium text-primary">
+            <Link href="/signup" className="font-medium text-primary">
               Sign Up
-            </a>
+            </Link>
           </p>
         </form>
       </Card>

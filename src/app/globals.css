@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-phone-number-input/style.css";
 
 /*
  * Material Design 3 Color System
@@ -316,4 +317,26 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.phone-input-root .PhoneInputCountry {
+  margin-right: 0.625rem;
+}
+
+.phone-input-root .PhoneInputCountrySelect {
+  cursor: pointer;
+}
+
+.phone-input-root .PhoneInputCountryIcon {
+  box-shadow: none;
+}
+
+.phone-input-root .PhoneInputInput {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--md-on-surface);
+  outline: none;
 }
