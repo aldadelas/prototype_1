@@ -31,11 +31,17 @@ export default function ProfilePage() {
     isAuthenticated,
     hydrated,
   } = useAppSelector((state) => state.auth);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
+  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSidebarOpen(window.innerWidth >= 1024);
+      const desktop = window.innerWidth >= 1024;
+      setIsDesktopViewport(desktop);
+      if (desktop) {
+        setIsMobileSidebarOpen(false);
+      }
     };
 
     handleResize();
@@ -65,19 +71,33 @@ export default function ProfilePage() {
   return (
     <div className="min-h-svh bg-surface">
       <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        isDesktopCollapsed={isDesktopSidebarCollapsed}
+        onToggleDesktop={() =>
+          setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed)
+        }
         menus={sideNavMenus}
         activeMenu="Dashboard"
       />
 
-      <main className="w-full">
+      <main
+        className={`w-full transition-all duration-200 ${
+          isDesktopSidebarCollapsed ? "lg:ml-20" : "lg:ml-72"
+        }`}
+      >
         <Topbar
           title="Profile"
           userDisplayName={`${firstName} ${lastName}`.trim() || username || "User"}
           userEmail={email || "Logged in user"}
           profilePhotoUrl={profilePhotoUrl}
-          onOpenSidebar={() => setIsSidebarOpen(true)}
+          onOpenSidebar={() => {
+            if (isDesktopViewport) {
+              setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed);
+            } else {
+              setIsMobileSidebarOpen(true);
+            }
+          }}
           onLogout={handleLogout}
           profileHref="/profile"
         />
