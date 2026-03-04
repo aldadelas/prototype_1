@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
@@ -11,6 +12,7 @@ import { useAppDispatch } from "@/lib/redux/hooks";
 import { setCredentials } from "@/lib/redux/features/auth/authSlice";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [companyName, setCompanyName] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
@@ -54,8 +56,17 @@ export default function SignUpPage() {
     }
 
     setPasswordError("");
-    dispatch(setCredentials({ username: adminEmail.trim() }));
+    dispatch(
+      setCredentials({
+        username: adminEmail.trim(),
+        fullName: adminFullName.trim(),
+        email: adminEmail.trim(),
+        phoneNumber: adminPhoneNumber ?? "",
+        companyName: companyName.trim(),
+      }),
+    );
     setIsRegistered(true);
+    router.push("/home");
   };
 
   const passwordToggle = (

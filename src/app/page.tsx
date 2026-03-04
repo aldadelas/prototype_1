@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
 import Card from "@/components/ui/Card";
@@ -9,7 +10,14 @@ import { EyeIcon, EyeOffIcon, UserCircleIcon } from "@/components/icon";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setCredentials } from "@/lib/redux/features/auth/authSlice";
 
+const DUMMY_USER = {
+  username: "demo@hrportal.com",
+  password: "demo123",
+  fullName: "Demo User",
+};
+
 export default function LoginPage() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { username: loggedInUser, isAuthenticated } = useAppSelector(
     (state) => state.auth,
@@ -17,11 +25,42 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim()) return;
-    dispatch(setCredentials({ username: username.trim() }));
+
+    if (!username.trim() || !password.trim()) {
+      setLoginError("Please fill username/email and password.");
+      return;
+    }
+
+    const isDummyLogin =
+      username.trim().toLowerCase() === DUMMY_USER.username &&
+      password === DUMMY_USER.password;
+
+    if (isDummyLogin) {
+      dispatch(
+        setCredentials({
+          username: DUMMY_USER.username,
+          fullName: DUMMY_USER.fullName,
+          email: DUMMY_USER.username,
+        }),
+      );
+      setLoginError("");
+      router.push("/home");
+      return;
+    }
+
+    dispatch(
+      setCredentials({
+        username: username.trim(),
+        fullName: username.trim(),
+        email: username.trim(),
+      }),
+    );
+    setLoginError("");
+    router.push("/home");
   };
 
   const passwordToggle = (
@@ -56,10 +95,17 @@ export default function LoginPage() {
           <p className="text-center text-sm text-on-surface-variant">
             Enter your credentials to continue
           </p>
+          <p className="rounded-xl bg-surface-container px-3 py-2 text-center text-xs text-on-surface-variant">
+            Dummy account: <strong>demo@hrportal.com</strong> /{" "}
+            <strong>demo123</strong>
+          </p>
           {isAuthenticated && (
             <p className="text-center text-sm text-primary">
               Welcome back, {loggedInUser}
             </p>
+          )}
+          {loginError && (
+            <p className="text-center text-sm text-error">{loginError}</p>
           )}
 
           <InputField
@@ -81,6 +127,18 @@ export default function LoginPage() {
 
           <Button type="submit" fullWidth className="mt-2 h-12">
             Sign In
+          </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            onClick={() => {
+              setUsername(DUMMY_USER.username);
+              setPassword(DUMMY_USER.password);
+              setLoginError("");
+            }}
+          >
+            Use Dummy User
           </Button>
 
           <p className="text-center text-sm text-on-surface-variant">
