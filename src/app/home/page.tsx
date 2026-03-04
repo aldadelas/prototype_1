@@ -9,10 +9,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/features/auth/authSlice";
 
 const sideNavMenus = [
-  "Dashboard",
-  "Attendance",
-  "Leave",
-  "Employee Management",
+  { label: "Dashboard", href: "/home" },
+  { label: "Attendance" },
+  { label: "Leave" },
+  { label: "Employee Management" },
 ];
 
 export default function HomePage() {
@@ -20,10 +20,12 @@ export default function HomePage() {
   const dispatch = useAppDispatch();
   const {
     username,
-    fullName,
+    firstName,
+    lastName,
     email,
     phoneNumber,
     companyName,
+    profilePhotoUrl,
     isAuthenticated,
     hydrated,
   } = useAppSelector((state) => state.auth);
@@ -70,8 +72,9 @@ export default function HomePage() {
       <main className="w-full">
         <Topbar
           title="Home"
-          userDisplayName={fullName || username || "User"}
+          userDisplayName={`${firstName} ${lastName}`.trim() || username || "User"}
           userEmail={email || "Logged in user"}
+          profilePhotoUrl={profilePhotoUrl}
           onOpenSidebar={() => setIsSidebarOpen(true)}
           onLogout={handleLogout}
         />
@@ -79,7 +82,7 @@ export default function HomePage() {
         <section className="p-8">
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-on-surface">
-              Welcome, {fullName || username || "User"}
+              Welcome, {`${firstName} ${lastName}`.trim() || username || "User"}
             </h2>
             <p className="mt-2 text-sm text-on-surface-variant">
               This is your home page layout with top bar, profile dropdown, and

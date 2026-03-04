@@ -19,9 +19,14 @@ export default function ReduxProvider({ children }: ReduxProviderProps) {
         const parsedAuth = JSON.parse(savedAuth) as {
           username?: string;
           fullName?: string;
+          firstName?: string;
+          lastName?: string;
+          birthDate?: string;
+          jobTitle?: string;
           email?: string;
           phoneNumber?: string;
           companyName?: string;
+          profilePhotoUrl?: string;
           isAuthenticated?: boolean;
         };
         store.dispatch(hydrateAuth(parsedAuth));
@@ -37,9 +42,14 @@ export default function ReduxProvider({ children }: ReduxProviderProps) {
       const authToPersist = {
         username: auth.username,
         fullName: auth.fullName,
+        firstName: auth.firstName,
+        lastName: auth.lastName,
+        birthDate: auth.birthDate,
+        jobTitle: auth.jobTitle,
         email: auth.email,
         phoneNumber: auth.phoneNumber,
         companyName: auth.companyName,
+        profilePhotoUrl: auth.profilePhotoUrl,
         isAuthenticated: auth.isAuthenticated,
       };
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authToPersist));

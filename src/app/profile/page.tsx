@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/features/auth/authSlice";
 
 const sideNavMenus = [
-  "Dashboard",
-  "Attendance",
-  "Leave",
-  "Employee Management",
+  { label: "Dashboard", href: "/home" },
+  { label: "Attendance" },
+  { label: "Leave" },
+  { label: "Employee Management" },
 ];
 
 export default function ProfilePage() {
@@ -20,10 +21,13 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const {
     username,
-    fullName,
+    firstName,
+    lastName,
+    birthDate,
+    jobTitle,
     email,
     phoneNumber,
-    companyName,
+    profilePhotoUrl,
     isAuthenticated,
     hydrated,
   } = useAppSelector((state) => state.auth);
@@ -70,58 +74,73 @@ export default function ProfilePage() {
       <main className="w-full">
         <Topbar
           title="Profile"
-          userDisplayName={fullName || username || "User"}
+          userDisplayName={`${firstName} ${lastName}`.trim() || username || "User"}
           userEmail={email || "Logged in user"}
+          profilePhotoUrl={profilePhotoUrl}
           onOpenSidebar={() => setIsSidebarOpen(true)}
           onLogout={handleLogout}
           profileHref="/profile"
         />
 
         <section className="p-8">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="p-6">
+          <Card className="p-6">
+            <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-on-surface">
-                User Information
+                Profile Summary
               </h2>
-              <div className="mt-4 space-y-3 text-sm text-on-surface-variant">
-                <p>
-                  <span className="font-medium text-on-surface">Full Name:</span>{" "}
-                  {fullName || "-"}
-                </p>
-                <p>
-                  <span className="font-medium text-on-surface">Username:</span>{" "}
-                  {username || "-"}
-                </p>
-                <p>
-                  <span className="font-medium text-on-surface">Email:</span>{" "}
-                  {email || "-"}
-                </p>
-                <p>
-                  <span className="font-medium text-on-surface">Phone:</span>{" "}
-                  {phoneNumber || "-"}
-                </p>
-              </div>
-            </Card>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={() => router.push("/profile/edit")}
+              >
+                Edit Profile
+              </Button>
+            </div>
 
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-on-surface">
-                Company Information
-              </h2>
-              <div className="mt-4 space-y-3 text-sm text-on-surface-variant">
-                <p>
-                  <span className="font-medium text-on-surface">Company:</span>{" "}
-                  {companyName || "-"}
+            <div className="mt-4 flex items-center gap-4">
+              <img
+                src={profilePhotoUrl || "https://i.pravatar.cc/100?img=12"}
+                alt="Profile photo"
+                className="h-20 w-20 rounded-full object-cover"
+              />
+              <div>
+                <p className="text-base font-semibold text-on-surface">
+                  {`${firstName} ${lastName}`.trim() || username || "User"}
                 </p>
-                <p>
-                  <span className="font-medium text-on-surface">Role:</span> Admin
+                <p className="text-sm text-on-surface-variant">
+                  {jobTitle || "No job title"}
                 </p>
-                <p>
-                  <span className="font-medium text-on-surface">Status:</span>{" "}
-                  Active
-                </p>
+                <p className="text-sm text-on-surface-variant">{email || "-"}</p>
               </div>
-            </Card>
-          </div>
+            </div>
+
+            <div className="mt-6 grid gap-3 text-sm text-on-surface-variant sm:grid-cols-2">
+              <p>
+                <span className="font-medium text-on-surface">First Name:</span>{" "}
+                {firstName || "-"}
+              </p>
+              <p>
+                <span className="font-medium text-on-surface">Last Name:</span>{" "}
+                {lastName || "-"}
+              </p>
+              <p>
+                <span className="font-medium text-on-surface">Birth Date:</span>{" "}
+                {birthDate || "-"}
+              </p>
+              <p>
+                <span className="font-medium text-on-surface">Job Title:</span>{" "}
+                {jobTitle || "-"}
+              </p>
+              <p>
+                <span className="font-medium text-on-surface">Email:</span>{" "}
+                {email || "-"}
+              </p>
+              <p>
+                <span className="font-medium text-on-surface">Phone:</span>{" "}
+                {phoneNumber || "-"}
+              </p>
+            </div>
+          </Card>
         </section>
       </main>
     </div>

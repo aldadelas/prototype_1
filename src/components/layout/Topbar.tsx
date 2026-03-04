@@ -6,7 +6,6 @@ import {
   BellIcon,
   ChevronDownIcon,
   MenuIcon,
-  UserCircleIcon,
 } from "@/components/icon";
 import Card from "@/components/ui/Card";
 
@@ -14,6 +13,7 @@ interface TopbarProps {
   title?: string;
   userDisplayName: string;
   userEmail: string;
+  profilePhotoUrl?: string;
   onOpenSidebar: () => void;
   onLogout: () => void;
   profileHref?: string;
@@ -23,6 +23,7 @@ export default function Topbar({
   title = "Home",
   userDisplayName,
   userEmail,
+  profilePhotoUrl,
   onOpenSidebar,
   onLogout,
   profileHref = "/profile",
@@ -58,7 +59,11 @@ export default function Topbar({
             onClick={() => setIsProfileMenuOpen((prev) => !prev)}
             className="flex items-center gap-2 rounded-xl px-2 py-1 transition-colors hover:bg-surface-container-high"
           >
-            <UserCircleIcon className="h-10 w-10 text-primary" />
+            <img
+              src={profilePhotoUrl || "https://i.pravatar.cc/100?img=12"}
+              alt="Profile photo"
+              className="h-10 w-10 rounded-full object-cover"
+            />
             <span className="text-sm font-medium text-on-surface">
               {userDisplayName}
             </span>
@@ -66,27 +71,36 @@ export default function Topbar({
           </button>
 
           {isProfileMenuOpen && (
-            <Card className="absolute top-14 right-0 w-56 p-2">
-              <div className="border-b border-outline-variant px-3 py-2">
-                <p className="text-sm font-medium text-on-surface">
-                  {userDisplayName}
-                </p>
-                <p className="text-xs text-on-surface-variant">{userEmail}</p>
+            <Card className="absolute top-14 right-0 w-56 p-3">
+              <div className="flex items-center gap-3 border-b border-outline-variant px-3 py-3">
+                <img
+                  src={profilePhotoUrl || "https://i.pravatar.cc/100?img=12"}
+                  alt="Profile photo"
+                  className="h-11 w-11 rounded-full object-cover"
+                />
+                <div>
+                  <p className="text-sm font-medium text-on-surface">
+                    {userDisplayName}
+                  </p>
+                  <p className="text-xs text-on-surface-variant">{userEmail}</p>
+                </div>
               </div>
+              <div className="mt-2 flex flex-col gap-1">
               <Link
                 href={profileHref}
                 onClick={() => setIsProfileMenuOpen(false)}
-                className="mt-1 w-full rounded-lg px-3 py-2 text-left text-sm text-on-surface hover:bg-surface-container-high"
+                className="w-full rounded-lg px-3 py-2.5 text-left text-sm text-on-surface hover:bg-surface-container-high"
               >
                 User Profile
               </Link>
               <button
                 type="button"
                 onClick={onLogout}
-                className="w-full rounded-lg px-3 py-2 text-left text-sm text-error hover:bg-error-container"
+                className="w-full rounded-lg px-3 py-2.5 text-left text-sm text-error hover:bg-error-container"
               >
                 Logout
               </button>
+              </div>
             </Card>
           )}
         </div>

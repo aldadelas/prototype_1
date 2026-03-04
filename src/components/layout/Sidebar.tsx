@@ -1,12 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { CloseIcon } from "@/components/icon";
+
+export interface SidebarMenuItem {
+  label: string;
+  href?: string;
+}
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   brand?: string;
-  menus: string[];
+  menus: SidebarMenuItem[];
   activeMenu?: string;
 }
 
@@ -47,20 +53,25 @@ export default function Sidebar({
 
         <nav className="flex flex-col gap-2">
           {menus.map((menu) => {
-            const isActive = activeMenu === menu;
+            const isActive = activeMenu === menu.label;
+            const className = `block w-full rounded-xl px-4 py-3 text-left text-sm transition-colors ${
+              isActive
+                ? "bg-primary-container font-medium text-on-primary-container"
+                : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
+            }`;
 
             return (
-              <button
-                key={menu}
-                type="button"
-                className={`w-full rounded-xl px-4 py-3 text-left text-sm transition-colors ${
-                  isActive
-                    ? "bg-primary-container font-medium text-on-primary-container"
-                    : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
-                }`}
-              >
-                {menu}
-              </button>
+              <div key={menu.label}>
+                {menu.href ? (
+                  <Link href={menu.href} onClick={onClose} className={className}>
+                    {menu.label}
+                  </Link>
+                ) : (
+                  <button type="button" className={className}>
+                    {menu.label}
+                  </button>
+                )}
+              </div>
             );
           })}
         </nav>

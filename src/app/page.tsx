@@ -11,9 +11,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setCredentials } from "@/lib/redux/features/auth/authSlice";
 
 const DUMMY_USER = {
-  username: "demo@hrportal.com",
+  username: "john.doe",
   password: "demo123",
-  fullName: "Demo User",
+  firstName: "John",
+  lastName: "Doe",
+  birthDate: "1990-05-15",
+  jobTitle: "HR Manager",
+  email: "john.doe@demohr.com",
+  phoneNumber: "+6281234567890",
+  companyName: "Demo HR Corp",
+  profilePhotoUrl: "https://i.pravatar.cc/100?img=12",
 };
 
 export default function LoginPage() {
@@ -35,16 +42,24 @@ export default function LoginPage() {
       return;
     }
 
+    const normalizedUsername = username.trim().toLowerCase();
     const isDummyLogin =
-      username.trim().toLowerCase() === DUMMY_USER.username &&
+      (normalizedUsername === DUMMY_USER.email.toLowerCase() ||
+        normalizedUsername === DUMMY_USER.username.toLowerCase()) &&
       password === DUMMY_USER.password;
 
     if (isDummyLogin) {
       dispatch(
         setCredentials({
           username: DUMMY_USER.username,
-          fullName: DUMMY_USER.fullName,
-          email: DUMMY_USER.username,
+          firstName: DUMMY_USER.firstName,
+          lastName: DUMMY_USER.lastName,
+          birthDate: DUMMY_USER.birthDate,
+          jobTitle: DUMMY_USER.jobTitle,
+          email: DUMMY_USER.email,
+          phoneNumber: DUMMY_USER.phoneNumber,
+          companyName: DUMMY_USER.companyName,
+          profilePhotoUrl: DUMMY_USER.profilePhotoUrl,
         }),
       );
       setLoginError("");
@@ -55,7 +70,8 @@ export default function LoginPage() {
     dispatch(
       setCredentials({
         username: username.trim(),
-        fullName: username.trim(),
+        firstName: username.trim(),
+        lastName: "",
         email: username.trim(),
       }),
     );
@@ -96,7 +112,8 @@ export default function LoginPage() {
             Enter your credentials to continue
           </p>
           <p className="rounded-xl bg-surface-container px-3 py-2 text-center text-xs text-on-surface-variant">
-            Dummy account: <strong>demo@hrportal.com</strong> /{" "}
+            Dummy account: <strong>john.doe</strong> atau{" "}
+            <strong>john.doe@demohr.com</strong> /{" "}
             <strong>demo123</strong>
           </p>
           {isAuthenticated && (
@@ -133,7 +150,7 @@ export default function LoginPage() {
             variant="outlined"
             fullWidth
             onClick={() => {
-              setUsername(DUMMY_USER.username);
+              setUsername(DUMMY_USER.email);
               setPassword(DUMMY_USER.password);
               setLoginError("");
             }}

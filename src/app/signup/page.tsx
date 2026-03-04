@@ -56,10 +56,15 @@ export default function SignUpPage() {
     }
 
     setPasswordError("");
+    const nameParts = adminFullName.trim().split(/\s+/);
+    const firstName = nameParts[0] ?? "";
+    const lastName = nameParts.slice(1).join(" ");
     dispatch(
       setCredentials({
         username: adminEmail.trim(),
-        fullName: adminFullName.trim(),
+        firstName,
+        lastName,
+        jobTitle: "Administrator",
         email: adminEmail.trim(),
         phoneNumber: adminPhoneNumber ?? "",
         companyName: companyName.trim(),
