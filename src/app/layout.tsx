@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "react-day-picker/style.css";
 import ReduxProvider from "@/lib/redux/provider";
 
 const geistSans = Geist({

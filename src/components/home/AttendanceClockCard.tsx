@@ -20,10 +20,6 @@ export default function AttendanceClockCard({
 }: AttendanceClockCardProps) {
   const [clockInTime, setClockInTime] = useState<Date | null>(null);
   const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
-  const [clockInLocation, setClockInLocation] = useState<ClockLocation | null>(null);
-  const [clockOutLocation, setClockOutLocation] = useState<ClockLocation | null>(
-    null,
-  );
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [now, setNow] = useState(new Date());
@@ -53,22 +49,6 @@ export default function AttendanceClockCard({
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const formatWorkingHours = () => {
-    if (!clockInTime) return "-";
-
-    const endTime = clockOutTime ?? now;
-    const diffMs = Math.max(0, endTime.getTime() - clockInTime.getTime());
-    const totalSeconds = Math.floor(diffMs / 1000);
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
-      2,
-      "0",
-    );
-    const seconds = String(totalSeconds % 60).padStart(2, "0");
-
-    return `${hours}:${minutes}:${seconds}`;
   };
 
   const formatWorkingHoursHourMinute = () => {
@@ -142,8 +122,6 @@ export default function AttendanceClockCard({
     if (!clockInTime || (clockInTime && clockOutTime)) {
       setClockInTime(new Date());
       setClockOutTime(null);
-      setClockInLocation(currentLocation);
-      setClockOutLocation(null);
       setIsGettingLocation(false);
       return;
     }

@@ -6,6 +6,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import DatePickerField from "@/components/ui/DatePickerField";
 import InputField from "@/components/ui/InputField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -13,7 +14,7 @@ import { logout, updateProfile } from "@/lib/redux/features/auth/authSlice";
 
 const sideNavMenus = [
   { label: "Dashboard", href: "/home" },
-  { label: "Attendance" },
+  { label: "Attendance", href: "/attendance" },
   { label: "Leave" },
   { label: "Employee Management" },
 ];
@@ -145,12 +146,11 @@ export default function EditProfilePage() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <InputField
+                <DatePickerField
                   id="profile-birth-date"
                   label="Birth Date"
-                  type="date"
                   value={editBirthDate}
-                  onChange={(e) => setEditBirthDate(e.target.value)}
+                  onChange={setEditBirthDate}
                 />
                 <InputField
                   id="profile-job-title"

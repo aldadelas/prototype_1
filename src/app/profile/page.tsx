@@ -11,7 +11,7 @@ import { logout } from "@/lib/redux/features/auth/authSlice";
 
 const sideNavMenus = [
   { label: "Dashboard", href: "/home" },
-  { label: "Attendance" },
+  { label: "Attendance", href: "/attendance" },
   { label: "Leave" },
   { label: "Employee Management" },
 ];
