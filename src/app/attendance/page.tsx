@@ -1,19 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import AttendanceTable from "@/components/attendance/AttendanceTable";
 import type { AttendanceRow } from "@/components/attendance/attendanceTypes";
-import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DatePickerField from "@/components/ui/DatePickerField";
 import InputField from "@/components/ui/InputField";
 import Modal from "@/components/ui/Modal";
 import TimePickerField from "@/components/ui/TimePickerField";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { logout } from "@/lib/redux/features/auth/authSlice";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 type MonthlyAttendanceData = Record<string, AttendanceRow[]>;
 type AttendanceRequest = {
@@ -42,13 +38,6 @@ const DUMMY_PENDING_REQUESTS: AttendanceRequest[] = [
     reason: "Ada meeting di luar kantor sehingga clock in terlambat.",
     status: "pending",
   },
-];
-
-const sideNavMenus = [
-  { label: "Dashboard", href: "/home" },
-  { label: "Attendance", href: "/attendance" },
-  { label: "Leave" },
-  { label: "Employee Management" },
 ];
 
 const ATTENDANCE_STORAGE_KEY = "prototype-attendance";
@@ -190,21 +179,7 @@ const sanitizeStoredMonthlyData = (
 };
 
 export default function AttendancePage() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const {
-    username,
-    firstName,
-    lastName,
-    email,
-    profilePhotoUrl,
-    isAuthenticated,
-    hydrated,
-  } = useAppSelector((state) => state.auth);
-
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
-  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
+  const { hydrated } = useAppSelector((state) => state.auth);
 
   const monthOptions = useMemo(() => buildMonthOptions(3), []);
   const currentMonthKey = monthOptions[0].key;
@@ -229,23 +204,6 @@ export default function AttendancePage() {
   const [pendingRequests, setPendingRequests] = useState<AttendanceRequest[]>(
     DUMMY_PENDING_REQUESTS,
   );
-
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setIsDesktopViewport(desktop);
-      if (desktop) setIsMobileSidebarOpen(false);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated && !isAuthenticated) {
-      router.replace("/");
-    }
-  }, [hydrated, isAuthenticated, router]);
 
   useEffect(() => {
     try {
@@ -274,11 +232,6 @@ export default function AttendancePage() {
     setEditReason("");
     setEditError("");
   }, [selectedMonth]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/");
-  };
 
   const rows = monthlyData[selectedMonth] ?? [];
   const editingRow = editingIndex !== null ? rows[editingIndex] ?? null : null;
@@ -399,50 +352,11 @@ export default function AttendancePage() {
     closeRequestModal();
   };
 
-  if (!hydrated) {
-    return (
-      <div className="flex min-h-svh items-center justify-center bg-surface text-on-surface-variant">
-        Loading...
-      </div>
-    );
-  }
+  if (!hydrated) return null;
 
   return (
-    <div className="min-h-svh overflow-x-hidden bg-surface">
-      <Sidebar
-        isMobileOpen={isMobileSidebarOpen}
-        onCloseMobile={() => setIsMobileSidebarOpen(false)}
-        isDesktopCollapsed={isDesktopSidebarCollapsed}
-        onToggleDesktop={() =>
-          setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed)
-        }
-        menus={sideNavMenus}
-        activeMenu="Attendance"
-      />
-
-      <main
-        className={`w-full min-w-0 transition-all duration-200 ${
-          isDesktopSidebarCollapsed
-            ? "lg:ml-20 lg:w-[calc(100%-5rem)]"
-            : "lg:ml-72 lg:w-[calc(100%-18rem)]"
-        }`}
-      >
-        <Topbar
-          title="Attendance"
-          userDisplayName={`${firstName} ${lastName}`.trim() || username || "User"}
-          userEmail={email || "Logged in user"}
-          profilePhotoUrl={profilePhotoUrl}
-          onOpenSidebar={() => {
-            if (isDesktopViewport) {
-              setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed);
-            } else {
-              setIsMobileSidebarOpen(true);
-            }
-          }}
-          onLogout={handleLogout}
-        />
-
-        <section className="max-w-full space-y-6 p-4 sm:p-6 lg:p-8">
+    <>
+      <section className="max-w-full space-y-6 p-4 sm:p-6 lg:p-8">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-2">
             <Card className="p-5">
               <p className="text-sm text-on-surface-variant">Pending Requests</p>
@@ -509,8 +423,7 @@ export default function AttendancePage() {
               onNextPage={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
             />
           </Card>
-        </section>
-      </main>
+      </section>
 
       <Modal
         open={isRequestModalOpen}
@@ -560,6 +473,6 @@ export default function AttendancePage() {
         </div>
         {requestError && <p className="mt-3 text-sm text-error">{requestError}</p>}
       </Modal>
-    </div>
+    </>
   );
 }

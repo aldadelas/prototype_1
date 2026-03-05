@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "react-day-picker/style.css";
 import ReduxProvider from "@/lib/redux/provider";
+import ProtectedLayoutShell from "@/components/layout/ProtectedLayoutShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <ProtectedLayoutShell>{children}</ProtectedLayoutShell>
+        </ReduxProvider>
       </body>
     </html>
   );

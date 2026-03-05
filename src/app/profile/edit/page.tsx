@@ -1,42 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import DatePickerField from "@/components/ui/DatePickerField";
 import InputField from "@/components/ui/InputField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { logout, updateProfile } from "@/lib/redux/features/auth/authSlice";
-
-const sideNavMenus = [
-  { label: "Dashboard", href: "/home" },
-  { label: "Attendance", href: "/attendance" },
-  { label: "Leave" },
-  { label: "Employee Management" },
-];
+import { updateProfile } from "@/lib/redux/features/auth/authSlice";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {
-    username,
     firstName,
     lastName,
     birthDate,
     jobTitle,
     email,
     phoneNumber,
-    profilePhotoUrl,
-    isAuthenticated,
-    hydrated,
   } = useAppSelector((state) => state.auth);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
-  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
   const [editFirstName, setEditFirstName] = useState(firstName || "");
   const [editLastName, setEditLastName] = useState(lastName || "");
   const [editBirthDate, setEditBirthDate] = useState(birthDate || "");
@@ -45,31 +29,6 @@ export default function EditProfilePage() {
   const [editPhone, setEditPhone] = useState<string | undefined>(
     phoneNumber || undefined,
   );
-
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setIsDesktopViewport(desktop);
-      if (desktop) {
-        setIsMobileSidebarOpen(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated && !isAuthenticated) {
-      router.replace("/");
-    }
-  }, [hydrated, isAuthenticated, router]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/");
-  };
 
   const handleSave = () => {
     dispatch(
@@ -85,50 +44,9 @@ export default function EditProfilePage() {
     router.push("/profile");
   };
 
-  if (!hydrated) {
-    return (
-      <div className="flex min-h-svh items-center justify-center bg-surface text-on-surface-variant">
-        Loading...
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-svh bg-surface">
-      <Sidebar
-        isMobileOpen={isMobileSidebarOpen}
-        onCloseMobile={() => setIsMobileSidebarOpen(false)}
-        isDesktopCollapsed={isDesktopSidebarCollapsed}
-        onToggleDesktop={() =>
-          setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed)
-        }
-        menus={sideNavMenus}
-        activeMenu="Dashboard"
-      />
-
-      <main
-        className={`w-full transition-all duration-200 ${
-          isDesktopSidebarCollapsed ? "lg:ml-20" : "lg:ml-72"
-        }`}
-      >
-        <Topbar
-          title="Edit Profile"
-          userDisplayName={`${firstName} ${lastName}`.trim() || username || "User"}
-          userEmail={email || "Logged in user"}
-          profilePhotoUrl={profilePhotoUrl}
-          onOpenSidebar={() => {
-            if (isDesktopViewport) {
-              setIsDesktopSidebarCollapsed((prevCollapsed) => !prevCollapsed);
-            } else {
-              setIsMobileSidebarOpen(true);
-            }
-          }}
-          onLogout={handleLogout}
-          profileHref="/profile"
-        />
-
-        <section className="p-8">
-          <Card className="p-6">
+    <section className="p-8">
+      <Card className="p-6">
             <h2 className="text-lg font-semibold text-on-surface">Edit Profile</h2>
             <div className="mt-6 space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -185,9 +103,7 @@ export default function EditProfilePage() {
                 Save
               </Button>
             </div>
-          </Card>
-        </section>
-      </main>
-    </div>
+      </Card>
+    </section>
   );
 }
