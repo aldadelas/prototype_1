@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "react-phone-number-input/style.css";
+@import "timepicker-ui/index.css";
 
 /*
  * Material Design 3 Color System
