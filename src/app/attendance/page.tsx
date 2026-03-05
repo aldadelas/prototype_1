@@ -16,6 +16,33 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/features/auth/authSlice";
 
 type MonthlyAttendanceData = Record<string, AttendanceRow[]>;
+type AttendanceRequest = {
+  id: string;
+  date: string;
+  clockIn: string;
+  clockOut: string;
+  reason: string;
+  status: "pending";
+};
+
+const DUMMY_PENDING_REQUESTS: AttendanceRequest[] = [
+  {
+    id: "pending-1",
+    date: "2026-03-02",
+    clockIn: "08:45",
+    clockOut: "17:20",
+    reason: "Lupa melakukan clock in saat tiba di kantor.",
+    status: "pending",
+  },
+  {
+    id: "pending-2",
+    date: "2026-03-03",
+    clockIn: "09:05",
+    clockOut: "18:00",
+    reason: "Ada meeting di luar kantor sehingga clock in terlambat.",
+    status: "pending",
+  },
+];
 
 const sideNavMenus = [
   { label: "Dashboard", href: "/home" },
@@ -199,6 +226,9 @@ export default function AttendancePage() {
   const [requestClockOut, setRequestClockOut] = useState("");
   const [requestReason, setRequestReason] = useState("");
   const [requestError, setRequestError] = useState("");
+  const [pendingRequests, setPendingRequests] = useState<AttendanceRequest[]>(
+    DUMMY_PENDING_REQUESTS,
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -351,6 +381,21 @@ export default function AttendancePage() {
       return;
     }
 
+    setPendingRequests((prev) => [
+      ...prev,
+      {
+        id:
+          typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : `${Date.now()}`,
+        date: normalizedDate,
+        clockIn: normalizedClockIn,
+        clockOut: normalizedClockOut,
+        reason: normalizedReason,
+        status: "pending",
+      },
+    ]);
+
     closeRequestModal();
   };
 
@@ -398,14 +443,12 @@ export default function AttendancePage() {
         />
 
         <section className="max-w-full space-y-6 p-4 sm:p-6 lg:p-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-2">
             <Card className="p-5">
-              <p className="text-sm text-on-surface-variant">Annual Leave Taken</p>
-              <p className="mt-2 text-3xl font-semibold text-on-surface">5 Days</p>
-            </Card>
-            <Card className="p-5">
-              <p className="text-sm text-on-surface-variant">Sick Leave Taken</p>
-              <p className="mt-2 text-3xl font-semibold text-on-surface">2 Days</p>
+              <p className="text-sm text-on-surface-variant">Pending Requests</p>
+              <p className="mt-2 text-3xl font-semibold text-on-surface">
+                {pendingRequests.length}
+              </p>
             </Card>
             <Card className="p-5">
               <p className="text-sm text-on-surface-variant">Working Day (This Month)</p>
