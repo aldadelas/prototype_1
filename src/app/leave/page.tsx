@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -88,6 +89,17 @@ const leaveHistoryColumns: DataTableColumn<LeaveHistoryRow>[] = [
 ];
 
 export default function LeavePage() {
+  const pageSize = 5;
+  const [page, setPage] = useState(1);
+  const totalRows = leaveHistoryRows.length;
+  const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const pageStartIndex = (safePage - 1) * pageSize;
+  const paginatedRows = useMemo(
+    () => leaveHistoryRows.slice(pageStartIndex, pageStartIndex + pageSize),
+    [pageStartIndex],
+  );
+
   const pendingRequestCount = leaveHistoryRows.filter((row) => row.status === "Pending").length;
   const annualLeaveTaken = leaveHistoryRows
     .filter((row) => row.leaveType === "Annual Leave" && row.status === "Approved")
@@ -95,6 +107,8 @@ export default function LeavePage() {
   const sickLeaveTaken = leaveHistoryRows
     .filter((row) => row.leaveType === "Sick Leave" && row.status === "Approved")
     .reduce((sum, row) => sum + row.totalDays, 0);
+  const handlePrevPage = () => setPage((currentPage) => Math.max(1, currentPage - 1));
+  const handleNextPage = () => setPage((currentPage) => Math.min(totalPages, currentPage + 1));
 
   return (
     <section className="max-w-full space-y-6 p-4 sm:p-6 lg:p-8">
@@ -124,11 +138,20 @@ export default function LeavePage() {
         </div>
         <DataTable
           columns={leaveHistoryColumns}
-          rows={leaveHistoryRows}
+          rows={paginatedRows}
           getRowKey={(row) => row.id}
           emptyState="Belum ada history leave."
           className="mt-4 w-full max-w-full overflow-x-auto"
           tableClassName="min-w-[680px] w-full table-auto text-left text-xs text-on-surface-variant sm:text-sm"
+          pagination={{
+            page: safePage,
+            totalPages,
+            pageSize,
+            totalRows,
+            pageStartIndex,
+            onPrevPage: handlePrevPage,
+            onNextPage: handleNextPage,
+          }}
         />
       </Card>
     </section>

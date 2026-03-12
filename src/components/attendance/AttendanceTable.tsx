@@ -130,42 +130,16 @@ export default function AttendanceTable({
         emptyState="Belum ada data attendance untuk bulan ini."
         className="mt-4 w-full max-w-full overflow-x-auto"
         tableClassName="min-w-[700px] w-full table-auto text-left text-xs text-on-surface-variant sm:text-sm"
+        pagination={{
+          page: safePage,
+          totalPages,
+          pageSize,
+          totalRows: rowsCount,
+          pageStartIndex,
+          onPrevPage,
+          onNextPage,
+        }}
       />
-
-      <div className="mt-4 border-t border-outline-variant pt-4">
-        <p className="text-center text-sm text-on-surface-variant sm:text-left">
-          Menampilkan {rowsCount === 0 ? 0 : pageStartIndex + 1}-
-          {Math.min(pageStartIndex + pageSize, rowsCount)} dari {rowsCount} data
-        </p>
-
-        <div className="mt-3 grid w-full grid-cols-3 items-center gap-2 sm:w-auto sm:grid-cols-[auto_auto_auto] sm:gap-3">
-          <div className="justify-self-start">
-            <Button
-              type="button"
-              variant="outlined"
-              onClick={onPrevPage}
-              disabled={safePage <= 1}
-            >
-              Previous
-            </Button>
-          </div>
-
-          <span className="min-w-16 justify-self-center text-center text-sm text-on-surface-variant">
-            {safePage}/{totalPages}
-          </span>
-
-          <div className="justify-self-end">
-            <Button
-              type="button"
-              variant="outlined"
-              onClick={onNextPage}
-              disabled={safePage >= totalPages}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </div>
 
       <Modal
         open={isEditModalOpen}

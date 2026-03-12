@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Button from "@/components/ui/Button";
 
 export interface DataTableColumn<T> {
   key: string;
@@ -16,6 +17,15 @@ interface DataTableProps<T> {
   footer?: ReactNode;
   className?: string;
   tableClassName?: string;
+  pagination?: {
+    page: number;
+    totalPages: number;
+    pageSize: number;
+    totalRows: number;
+    pageStartIndex: number;
+    onPrevPage: () => void;
+    onNextPage: () => void;
+  };
 }
 
 export default function DataTable<T>({
@@ -26,6 +36,7 @@ export default function DataTable<T>({
   footer,
   className = "mt-4 w-full max-w-full overflow-x-auto",
   tableClassName = "w-full table-fixed text-left text-xs text-on-surface-variant sm:table-auto sm:text-sm",
+  pagination,
 }: DataTableProps<T>) {
   return (
     <>
@@ -71,6 +82,44 @@ export default function DataTable<T>({
           </tbody>
         </table>
       </div>
+
+      {pagination && (
+        <div className="mt-4 border-t border-outline-variant pt-4">
+          <p className="text-center text-sm text-on-surface-variant sm:text-left">
+            Menampilkan {pagination.totalRows === 0 ? 0 : pagination.pageStartIndex + 1}-
+            {Math.min(pagination.pageStartIndex + pagination.pageSize, pagination.totalRows)} dari{" "}
+            {pagination.totalRows} data
+          </p>
+
+          <div className="mt-3 grid w-full grid-cols-3 items-center gap-2 sm:w-auto sm:grid-cols-[auto_auto_auto] sm:gap-3">
+            <div className="justify-self-start">
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={pagination.onPrevPage}
+                disabled={pagination.page <= 1}
+              >
+                Previous
+              </Button>
+            </div>
+
+            <span className="min-w-16 justify-self-center text-center text-sm text-on-surface-variant">
+              {pagination.page}/{pagination.totalPages}
+            </span>
+
+            <div className="justify-self-end">
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={pagination.onNextPage}
+                disabled={pagination.page >= pagination.totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {footer}
     </>

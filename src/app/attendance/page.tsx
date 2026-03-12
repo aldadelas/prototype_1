@@ -378,7 +378,6 @@ export default function AttendancePage() {
                 <h2 className="text-lg font-semibold text-on-surface">Clock In/Out History</h2>
                 <Button
                   type="button"
-                  variant="outlined"
                   className="h-9 px-4"
                   onClick={() => setIsRequestModalOpen(true)}
                 >
