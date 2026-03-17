@@ -320,6 +320,40 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease;
+  will-change: transform;
+}
+
+button:active,
+a:active,
+[role="button"]:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active {
+  transform: scale(0.98);
+}
+
+button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled {
+  cursor: not-allowed;
+}
+
+button:disabled:active,
+input[type="button"]:disabled:active,
+input[type="submit"]:disabled:active,
+input[type="reset"]:disabled:active {
+  transform: none;
+}
+
 .phone-input-root .PhoneInputCountry {
   margin-right: 0.625rem;
 }
@@ -340,4 +374,24 @@ body {
   background: transparent;
   color: var(--md-on-surface);
   outline: none;
+}
+
+/* Keep scroll behavior while hiding scrollbar track/thumb. */
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and old Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Hide scrollbars globally while keeping scroll functionality. */
+* {
+  -ms-overflow-style: none; /* IE and old Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

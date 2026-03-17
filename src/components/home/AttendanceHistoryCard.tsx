@@ -15,7 +15,7 @@ export default function AttendanceHistoryCard({
       <h3 className="text-sm font-semibold text-on-surface">
         Riwayat Clock In/Out 7 Hari Terakhir
       </h3>
-      <div className="mt-4 flex-1 overflow-y-auto pr-1">
+      <div className="scrollbar-hidden mt-4 flex-1 overflow-y-auto pr-1">
         {history.length === 0 ? (
           <p className="text-sm text-on-surface-variant">Belum ada data clock in/out.</p>
         ) : (

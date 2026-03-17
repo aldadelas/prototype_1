@@ -15,7 +15,7 @@ const sideNavMenus = [
   { label: "Dashboard", href: "/home" },
   { label: "Attendance", href: "/attendance" },
   { label: "Leave", href: "/leave" },
-  { label: "Employee Management" },
+  { label: "Employee Management", href: "/employee" },
 ];
 
 const isProtectedPath = (pathname: string) =>
@@ -23,6 +23,8 @@ const isProtectedPath = (pathname: string) =>
   pathname === "/attendance" ||
   pathname === "/leave" ||
   pathname.startsWith("/leave/") ||
+  pathname === "/employee" ||
+  pathname.startsWith("/employee/") ||
   pathname === "/profile" ||
   pathname.startsWith("/profile/");
 
@@ -69,6 +71,8 @@ export default function ProtectedLayoutShell({ children }: ProtectedLayoutShellP
     if (pathname === "/attendance") return "Attendance";
     if (pathname === "/leave/request") return "Leave Request";
     if (pathname === "/leave") return "Leave";
+    if (pathname === "/employee/add") return "Add Employee";
+    if (pathname === "/employee") return "Employee Management";
     if (pathname === "/profile/edit") return "Edit Profile";
     if (pathname.startsWith("/profile")) return "Profile";
     return "Home";
@@ -77,6 +81,7 @@ export default function ProtectedLayoutShell({ children }: ProtectedLayoutShellP
   const activeMenu = useMemo(() => {
     if (pathname === "/attendance") return "Attendance";
     if (pathname === "/leave" || pathname.startsWith("/leave/")) return "Leave";
+    if (pathname === "/employee" || pathname.startsWith("/employee/")) return "Employee Management";
     return "Dashboard";
   }, [pathname]);
 
